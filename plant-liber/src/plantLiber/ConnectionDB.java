@@ -25,7 +25,7 @@ public class ConnectionDB
 			//PROP 100 ok
 			//DBPL.generaTuplaGenerica(1, 100, Tabella.ProprietàOfficinali);
 			//HABITAT 70 ok
-			//DBPL.generaTuplaGenerica(1, 70, Tabella.Habitat);
+			DBPL.generaTuplaGenerica(1, 70, Tabella.Habitat);
 			//AREA 400  ok
 			//DBPL.generaTuplaGenerica(1, 400, Tabella.Area);
 			//SPECIE 500 ok
@@ -38,9 +38,9 @@ public class ConnectionDB
 			//ISTITUTO RICERCA
 			//DBPL.generaTuplaGenerica(0, 200, Tabella.IstitutoDiRicerca);
 			//COLLEZIONE 600 ok
-			DBPL.generaTuplaGenerica(1, 600, Tabella.Collezione);
-			//CLASSIFIC 200 ok
-			//DBPL.generaTuplaGenerica(1, 200, Tabella.Classificazione);
+			//DBPL.generaTuplaGenerica(1, 600, Tabella.Collezione);
+			//CLASSIFIC 370 ok
+			//DBPL.generaTuplaGenerica(1, 370, Tabella.Classificazione);
 			//PROPRIETÀ OFFICIN 700 ok
 			//DBPL.generaTuplaGenerica(1, 700, Tabella.ProprietàOfficinali);
 			 

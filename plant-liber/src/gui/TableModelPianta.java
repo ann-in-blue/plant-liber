@@ -15,7 +15,7 @@ public class TableModelPianta extends AbstractTableModel
 {
 	private ArrayList<Pianta> listaPiante;
 	
-	private String[] nomiColonne = {"nome comune", "nome scientifico"};
+	private String[] nomiColonne = {"idCampione", "nome scientifico", "specie", "famiglia"};
 
 	public TableModelPianta()
 	{
@@ -38,7 +38,7 @@ public class TableModelPianta extends AbstractTableModel
 
 	@Override
 	public int getColumnCount() {
-		return 2;
+		return 4;
 	}
 
 	@Override
@@ -49,8 +49,10 @@ public class TableModelPianta extends AbstractTableModel
 		//recuperiamo dalla riga l'elemento nella colonna cercata
 		return switch(columnIndex)
 		{
-		case 0 -> pianta.getNomeComune();
+		case 0 -> pianta.getIdCampione();
 		case 1 -> pianta.getNomeScientifico();
+		case 2 -> pianta.getSpecie();
+		case 3 -> pianta.getFamiglia();
 		default -> null;
 		};
 		

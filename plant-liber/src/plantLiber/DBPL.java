@@ -128,18 +128,18 @@ public class DBPL
 			case PiantaOfficinale -> res = "INSERT INTO PiantaOfficinale(idCampione,proprietàOfficinali) "
 					+ "VALUES ("+ i  +",'p_" + (int)(Math.random()*100)+"')";
 	
-			case Specie -> res = "INSERT INTO Specie(nome,classificazioneF) VALUES ('s_"+i+"','c_"+ (int)(Math.random()*90)+"')";
+			case Specie -> res = "INSERT INTO Specie(nome) VALUES ('specie_"+i+"')";
 			
 			case Caratteristiche -> res = "INSERT INTO Caratteristiche(tipo,durata,altezza,forma,tossicità) "
 					+ "VALUES (" + i + ",'d_"+ (int)(Math.random()*9)+ "',"+ (int)(Math.random()*350)+ ",'f_"+(int)(Math.random()*30)+
 					"','t_"+(int)(Math.random()*2)+"')";
 			
 			case Classificazione -> res = "INSERT INTO Classificazione(nomeSpecie,regno,divisione,classe,ordine,famiglia,genere)"
-					+ "	 VALUES('s_"+ i+"','regno_"+(int)(Math.random()*3)+"','divisione_"+(int)(Math.random()*35)+"','classe_"+ 
+					+ "	 VALUES('specie_"+ i+"','regno_"+(int)(Math.random()*3)+"','divisione_"+(int)(Math.random()*35)+"','classe_"+ 
 					(int)(Math.random()*20)+"','ordine_"+(int)(Math.random()*10)+"','famiglia_"+(int)(Math.random()*25)+"','genere_"+(int)(Math.random()*17)+"')";
 			
-			case Habitat -> res = "INSERT INTO Habitat(tipoH,fasciaClimatica,latitudine,altitudine,topologia) VALUES("+i+",'clima_"+(int)(Math.random()*17)+"','lat_"
-					+ (int)(Math.random()*999999)+"',"+(int)(Math.random()*5000)+",'topol_"+(int)(Math.random()*25)+"')";
+			case Habitat -> res = "INSERT INTO Habitat(tipoH,fasciaClimatica,latitudine,altitudine,topologia, nome) VALUES("+i+",'clima_"+(int)(Math.random()*17)+"','lat_"
+					+ (int)(Math.random()*999999)+"',"+(int)(Math.random()*5000)+",'topol_"+(int)(Math.random()*25)+"','habitat_"+(int)(Math.random()*70)+"')";
 			
 			case Area -> res = "INSERT INTO Area(nome,regione,clima) VALUES('area_"+ i +"','reg_"+ (int)(Math.random()*130)+ "',"+(int)(Math.random()*70)+")";
 			

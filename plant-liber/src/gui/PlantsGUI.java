@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +24,8 @@ import plantLiber.Pianta;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -32,8 +33,10 @@ public class PlantsGUI {
 
 	private JFrame frame;
 	private JTextField fieldNomeComune;
+	private JTextField fieldSpecie;
 	private JTextField fieldNomeScientifico;
 	private TablePanel tablePanelRisultati;
+	private TextAreaPanel textAreaRisultati;
 
 	
 	static Connection conn = null;
@@ -104,13 +107,18 @@ public class PlantsGUI {
 		labelNomeComune.setBounds(60, 134, 111, 28);
 		frame.getContentPane().add(labelNomeComune);
 		
+		//inserimento specie
+		JLabel labelSpecie = new JLabel("Specie:");
+		labelSpecie.setBounds(60, 170, 111, 28);
+		frame.getContentPane().add(labelSpecie);
+		
 		JLabel labelRicercaAvanzata = new JLabel("Ricerca Avanzata:");
 		labelRicercaAvanzata.setFont(new Font("Dialog", Font.BOLD, 17));
-		labelRicercaAvanzata.setBounds(12, 195, 177, 20);
+		labelRicercaAvanzata.setBounds(12, 220, 177, 20);
 		frame.getContentPane().add(labelRicercaAvanzata);
 		
-		JLabel labelNomeScientifico = new JLabel("Nome Scientifico:");
-		labelNomeScientifico.setBounds(43, 227, 129, 23);
+		JLabel labelNomeScientifico = new JLabel("Caratteri iniziali del nome:");
+		labelNomeScientifico.setBounds(43, 240, 129, 23);
 		frame.getContentPane().add(labelNomeScientifico);
 		
 		//campi input
@@ -119,28 +127,42 @@ public class PlantsGUI {
 		frame.getContentPane().add(fieldNomeComune);
 		fieldNomeComune.setColumns(10);
 		
+		fieldSpecie = new JTextField();
+		fieldSpecie.setBounds(189, 170, 114, 23);
+		frame.getContentPane().add(fieldSpecie);
+		fieldSpecie.setColumns(10);
+		
 		fieldNomeScientifico = new JTextField();
-		fieldNomeScientifico.setBounds(190, 228, 114, 21);
+		fieldNomeScientifico.setBounds(190, 240, 114, 21);
 		frame.getContentPane().add(fieldNomeScientifico);
 		fieldNomeScientifico.setColumns(10);
 		
-		//tabella per vedere i risultati
+		//tabella per vedere i risultati della ricerca
 		tablePanelRisultati = new TablePanel();
 		tablePanelRisultati.setBounds(500, 100, 400, 200);
 		frame.getContentPane().add(tablePanelRisultati);
 		tablePanelRisultati.setVisible(false);
 
+		//area panel per vedere i risultati delle query che non prevedono inserimento di input dall'utente
+		textAreaRisultati = new TextAreaPanel();
+		textAreaRisultati.setBounds(500, 350, 400, 150);
+		frame.getContentPane().add(textAreaRisultati);
+		textAreaRisultati.setVisible(false);
 		
 		JButton ricercaSemplice = new JButton("cerca");
 		ricercaSemplice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				String nome, query;
+				String nome, specie, query;
 				ArrayList<Pianta> listaPiante = new ArrayList<>();
 		
 				nome = fieldNomeComune.getText();
-				query = "SELECT * FROM PlantLiber.Pianta WHERE nomeComune=\""+ nome+"\"";
+				specie = fieldSpecie.getText();
+				query = "SELECT idCampione, nomeComune, nomeScientifico, nomeSpecie, famiglia "
+						+ "FROM PlantLiber.Pianta, PlantLiber.Classificazione "
+						+ "WHERE nomeComune=\""+ nome+"\" and nomeSpecie=\""+ specie +"\"";
 
+				System.out.println(query);
 				tablePanelRisultati.setVisible(true);
 				
 				try {
@@ -151,45 +173,98 @@ public class PlantsGUI {
 					//if(stmt.execute(query)) {
 						//if(query.equalsIgnoreCase("default")) {
 							//rs = stmt.getResultSet();
-							
 					while(rs.next()) {
 						
 						String idCampione = rs.getString("idCampione");
-					    String nomeComune = rs.getString("nomeComune");
 					    String nomeScientifico =rs.getString("nomeScientifico");
+					    String nomeSpecie = rs.getString("nomeSpecie");
+					    String famiglia = rs.getString("famiglia");
 					    
-					    listaPiante.add(new Pianta(idCampione, nomeComune, nomeScientifico));
-					    tablePanelRisultati.aggiorna();
-						System.out.println(idCampione + nomeComune + nomeScientifico);
-						//tablePanelRisultati.setDataRicercaSemplice(idCampione, nomeComune, nomeScientifico);		 
-		
+					    listaPiante.add(new Pianta(idCampione, nomeScientifico, nomeSpecie, famiglia));
+					    tablePanelRisultati.aggiorna();		
 						fieldNomeComune.setText("");
 						fieldNomeComune.requestFocus();  //per rimettere il cursore su Common Name 
 					
-					
 						}						
 						
-							tablePanelRisultati.setDataRicercaSemplice(listaPiante);		 
-
-							System.out.println(listaPiante);
-							stmt.close();
-							//}
-						//}
+					if(!listaPiante.isEmpty())
+					{
+						textAreaRisultati.repaint();
+						tablePanelRisultati.setDataRicercaSemplice(listaPiante);
+							
+					} else {
+						JOptionPane.showMessageDialog(frame, "Elemento non trovato.\nControllare di aver inserito i dati corretti.");
+					}
+							stmt.close();		
+					
+				
 					} catch (SQLException e1) {
 					e1.printStackTrace();
 			
-		}
+					}
 				}
 
 			}
 		);
 		
-		ricercaSemplice.setBounds(306, 138, 84, 24);
+		ricercaSemplice.setBounds(306, 155, 84, 24);
 		frame.getContentPane().add(ricercaSemplice);
 		
 		JButton ricercaAvanzata = new JButton("cerca");
-		ricercaAvanzata.setBounds(306, 226, 84, 24);
+		ricercaAvanzata.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String caratteri, query;
+				ArrayList<Pianta> listaPiante = new ArrayList<>();
+		
+				caratteri = fieldNomeScientifico.getText();
+				query = "SELECT nomeScientifico, specie, famiglia, regno, divisione, fasciaClimatica "
+						+ "FROM PlantLiber.Pianta as P, PlantLiber.Classificazione as C, PlantLiber.Habitat as H"
+						+ " WHERE nomeScientifico LIKE '"+ caratteri +"%' and P.specie = C.nomeSpecie and P.ambiente = H.nome";
+
+				System.out.println(query);
+				
+				try {
+		
+					stmt = conn.createStatement();
+					rs = stmt.executeQuery(query);
+					
+					//if(stmt.execute(query)) {
+						//if(query.equalsIgnoreCase("default")) {
+							//rs = stmt.getResultSet();
+					while(rs.next()) {
+						
+					    String nomeScientifico =rs.getString("nomeScientifico");
+					    String nomeSpecie = rs.getString("specie");
+					    String famiglia = rs.getString("famiglia");
+					    String regno =rs.getString("regno");
+					    String divisione = rs.getString("divisione");
+					    String clima = rs.getString("fasciaClimatica");
+					    
+					    listaPiante.add(new Pianta(nomeScientifico, nomeSpecie, famiglia, regno, divisione, clima));
+						textAreaRisultati.appendiTesto(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
+						textAreaRisultati.appendiTesto("\n");
+						textAreaRisultati.setVisible(true);
+						
+					}						
+						
+					if(listaPiante.isEmpty())
+						JOptionPane.showMessageDialog(frame, "Elemento non trovato.\nControllare di aver inserito i dati corretti.");
+					
+							stmt.close();		
+					
+				
+					} catch (SQLException e1) {
+					e1.printStackTrace();
+			
+					}
+				}
+
+			}
+		);
+		ricercaAvanzata.setBounds(306, 240, 84, 20);
 		frame.getContentPane().add(ricercaAvanzata);
+		
 		
 			}
 		}
