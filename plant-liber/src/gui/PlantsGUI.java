@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 import plantLiber.Pianta;
 
@@ -36,8 +37,14 @@ public class PlantsGUI {
 	private JTextField fieldSpecie;
 	private JTextField fieldNomeScientifico;
 	private TablePanel tablePanelRisultati;
-	private TextAreaPanel textAreaRisultati;
+	//private TextAreaPanel textAreaRisultati;
+	private JTextArea textAreaRisultati;
+	private JScrollPane scrollPaneRisultati;
 
+	private JLabel labelBottoni;
+	
+	//bottoni query
+	private JButton btnPiantePerArea;
 	
 	static Connection conn = null;
 	Statement stmt;
@@ -143,11 +150,15 @@ public class PlantsGUI {
 		frame.getContentPane().add(tablePanelRisultati);
 		tablePanelRisultati.setVisible(false);
 
-		//area panel per vedere i risultati delle query che non prevedono inserimento di input dall'utente
-		textAreaRisultati = new TextAreaPanel();
-		textAreaRisultati.setBounds(500, 350, 400, 150);
-		frame.getContentPane().add(textAreaRisultati);
-		textAreaRisultati.setVisible(false);
+		//Scroll panel per vedere i risultati delle query che non prevedono inserimento di input dall'utente
+		textAreaRisultati = new JTextArea();
+		textAreaRisultati.setEditable(false);
+
+		scrollPaneRisultati = new JScrollPane(textAreaRisultati);
+		scrollPaneRisultati.setBounds(500, 350, 400, 150);
+		frame.getContentPane().add(scrollPaneRisultati);
+		scrollPaneRisultati.setVisible(false);
+
 		
 		JButton ricercaSemplice = new JButton("cerca");
 		ricercaSemplice.addActionListener(new ActionListener() {
@@ -242,9 +253,10 @@ public class PlantsGUI {
 					    String clima = rs.getString("fasciaClimatica");
 					    
 					    listaPiante.add(new Pianta(nomeScientifico, nomeSpecie, famiglia, regno, divisione, clima));
-						textAreaRisultati.appendiTesto(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
-						textAreaRisultati.appendiTesto("\n");
+						textAreaRisultati.append(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
+						textAreaRisultati.append("\n");
 						textAreaRisultati.setVisible(true);
+						scrollPaneRisultati.setVisible(true);
 						
 					}						
 						
@@ -265,6 +277,54 @@ public class PlantsGUI {
 		ricercaAvanzata.setBounds(306, 240, 84, 20);
 		frame.getContentPane().add(ricercaAvanzata);
 		
+		//label sezione dei bottoni
+		JLabel labelBottoni = new JLabel("Ricerche frequenti");
+		labelBottoni.setFont(new Font("Dialog", Font.BOLD, 17));
+		labelBottoni.setBounds(100, 300, 200, 28);
+		frame.getContentPane().add(labelBottoni);
 		
-			}
-		}
+		//bottone per la ricerca delle piante per area
+		JButton btnPiantePerArea = new JButton("Piante per Area");
+		btnPiantePerArea.setBounds(60, 350, 150, 30);
+		frame.getContentPane().add(btnPiantePerArea);
+		
+		btnPiantePerArea.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String query = "SELECT nome, count "
+						+ "FROM PlantLiber.piante_per_area "
+						+ "where count > 30";
+		
+				try {
+					
+					stmt = conn.createStatement();
+					rs = stmt.executeQuery(query);
+					
+					while(rs.next()) {
+						
+						String nome = rs.getString("nome");
+						int count = rs.getInt("count");
+					   
+						textAreaRisultati.append(nome +" "+ count);
+						textAreaRisultati.append("\n");
+						textAreaRisultati.setVisible(true);
+						scrollPaneRisultati.setVisible(true);
+						
+						}
+				}catch (SQLException e1) {
+					e1.printStackTrace();
+			
+					}
+				}
+			});
+				
+				
+				
+				
+				
+				
+				
+				
+				
+	}
+}
