@@ -1,8 +1,12 @@
 package gui;
 
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
@@ -15,19 +19,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import plantLiber.Pianta;
-
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.awt.event.ActionEvent;
 
 public class PlantsGUI {
@@ -40,7 +55,8 @@ public class PlantsGUI {
 	//private TextAreaPanel textAreaRisultati;
 	private JTextArea textAreaRisultati;
 	private JScrollPane scrollPaneRisultati;
-
+	private JFileChooser fileChooser;
+	
 	private JLabel labelBottoni;
 	
 	//bottoni query
@@ -98,6 +114,9 @@ public class PlantsGUI {
 		frame.setBounds(100, 100, 988, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		
+		frame.setJMenuBar(creaBarraMenu());
+
 		
 		//TITOLI
 		JLabel labelPlantliber = new JLabel("PlantLiber");
@@ -184,6 +203,7 @@ public class PlantsGUI {
 					//if(stmt.execute(query)) {
 						//if(query.equalsIgnoreCase("default")) {
 							//rs = stmt.getResultSet();
+
 					while(rs.next()) {
 						
 						String idCampione = rs.getString("idCampione");
@@ -206,21 +226,21 @@ public class PlantsGUI {
 					} else {
 						JOptionPane.showMessageDialog(frame, "Elemento non trovato.\nControllare di aver inserito i dati corretti.");
 					}
-							stmt.close();		
-					
+					stmt.close();
 				
 					} catch (SQLException e1) {
 					e1.printStackTrace();
 			
 					}
 				}
-
 			}
 		);
 		
 		ricercaSemplice.setBounds(306, 155, 84, 24);
 		frame.getContentPane().add(ricercaSemplice);
 		
+		
+		//RICERCA AVANZATA
 		JButton ricercaAvanzata = new JButton("cerca");
 		ricercaAvanzata.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -240,12 +260,10 @@ public class PlantsGUI {
 					stmt = conn.createStatement();
 					rs = stmt.executeQuery(query);
 					
-					//if(stmt.execute(query)) {
-						//if(query.equalsIgnoreCase("default")) {
-							//rs = stmt.getResultSet();
 					while(rs.next()) {
+					//while(!rs.isAfterLast()) {
 						
-					    String nomeScientifico =rs.getString("nomeScientifico");
+						String nomeScientifico =rs.getString("nomeScientifico");
 					    String nomeSpecie = rs.getString("specie");
 					    String famiglia = rs.getString("famiglia");
 					    String regno =rs.getString("regno");
@@ -253,19 +271,19 @@ public class PlantsGUI {
 					    String clima = rs.getString("fasciaClimatica");
 					    
 					    listaPiante.add(new Pianta(nomeScientifico, nomeSpecie, famiglia, regno, divisione, clima));
-						textAreaRisultati.append(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
+					    System.out.println(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
+					    textAreaRisultati.append(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
 						textAreaRisultati.append("\n");
 						textAreaRisultati.setVisible(true);
 						scrollPaneRisultati.setVisible(true);
-						
+												
 					}						
 						
 					if(listaPiante.isEmpty())
-						JOptionPane.showMessageDialog(frame, "Elemento non trovato.\nControllare di aver inserito i dati corretti.");
-					
-							stmt.close();		
-					
+						JOptionPane.showMessageDialog(frame, "Elemento non trovato.\nControllare di aver inserito i dati corretti.");					
 				
+					stmt.close();		
+
 					} catch (SQLException e1) {
 					e1.printStackTrace();
 			
@@ -293,7 +311,7 @@ public class PlantsGUI {
 				
 				String query = "SELECT nome, count "
 						+ "FROM PlantLiber.piante_per_area "
-						+ "where count > 30";
+						+ "where count > 30 ORDER BY nome";
 		
 				try {
 					
@@ -305,7 +323,7 @@ public class PlantsGUI {
 						String nome = rs.getString("nome");
 						int count = rs.getInt("count");
 					   
-						textAreaRisultati.append(nome +" "+ count);
+						textAreaRisultati.append(nome +":   "+ count);
 						textAreaRisultati.append("\n");
 						textAreaRisultati.setVisible(true);
 						scrollPaneRisultati.setVisible(true);
@@ -320,11 +338,147 @@ public class PlantsGUI {
 				
 				
 				
-				
-				
-				
-				
-				
-				
 	}
+	
+	//CREA BARRA PER IL MENU
+	
+		private JMenuBar creaBarraMenu()
+		{
+			JMenuBar barraMenu = new JMenuBar();
+			JMenu menuFile = new JMenu("File");
+			
+			//items dentro la sezione 'file'
+			JMenuItem menuFileAggiungiPianta = new JMenuItem("Aggiungi una pianta");
+			JMenuItem menuFileAggiungiRaccoglitore = new JMenuItem("Aggiungi un raccoglitore");
+			JMenuItem menuFileEliminaPianta = new JMenuItem("Elimina una pianta");
+			
+			//file chooser per caricare i dati da un file
+			fileChooser = new JFileChooser();
+			
+			//aggiunta item al menu file
+			menuFile.add(menuFileAggiungiPianta);
+			menuFile.add(menuFileAggiungiRaccoglitore);
+			menuFile.addSeparator();
+			menuFile.add(menuFileEliminaPianta);
+
+			//OPZIONE AGGIUNGI PIANTA
+			menuFileAggiungiPianta.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(fileChooser.showOpenDialog(menuFileAggiungiPianta) == JFileChooser.APPROVE_OPTION){
+						caricaDaFile(fileChooser.getSelectedFile(), "Pianta");
+						}
+					}
+				});
+			
+			//OPZIONE AGGIUNGI RACCOGLITORE
+			menuFileAggiungiRaccoglitore.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(fileChooser.showOpenDialog(menuFileAggiungiRaccoglitore) == JFileChooser.APPROVE_OPTION){
+						caricaDaFile(fileChooser.getSelectedFile(), "Raccoglitore");
+						}
+					}
+				});
+			
+			//OPZIONE ELIMINA PIANTA
+			menuFileEliminaPianta.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//finestra per l inserimento dell'id della pianta in input
+					String input = JOptionPane.showInputDialog(frame,  "Inserisci l'id del campione da eliminare...", "Inserimento id", JOptionPane.QUESTION_MESSAGE);
+					int id = Integer.parseInt(input);
+										
+					String query = "DELETE FROM Pianta WHERE idCampione = "+ id;
+					System.out.println(query);
+					
+					//connessione al db
+					try {
+						stmt = conn.createStatement();					
+						stmt.execute(query);
+						//stampa messaggio dopo l'eliminazione
+						textAreaRisultati.append("Record eliminato");
+						textAreaRisultati.append("\n");
+						textAreaRisultati.setVisible(true);
+						scrollPaneRisultati.setVisible(true);
+						
+
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+						}
+					}
+				});
+			
+			barraMenu.add(menuFile);
+			return barraMenu;
+			} //creaBarraMenu
+
+		/**
+		 * Metodo per caricare dei dati da un file e inserirli nel database
+		 * @param file
+		 * @param entita -> indica in quale tabella inserire i dati
+		 */
+		public void caricaDaFile(File file, String entita)
+		{
+			try {
+				
+				Path filePath = Path.of(file.getAbsolutePath());	//recupera il Path del file
+				String content = Files.readString(filePath);		//lettura stringa completa da file (stringa divisa in due da un trattino
+				String query1, query2; //query per gli inserimenti
+				
+				//divisione della stringa a metà: prima metà in cui sono presenti i dati delle entità principali (pianta e raccoglitore) e seconda metà per i dati delle entita secondarie (istituto di ricerca e specie)
+				String[] dati = content.split("-");
+				
+				//dati prima metà: pianta/raccoglitore -> datiPrimaMeta[3] contiene il nome della specie
+				String[] datiPrimaMeta = dati[0].split(",");
+				
+				System.out.println(dati[0]);
+				System.out.println("\n");
+				System.out.println(datiPrimaMeta[3]);
+				
+				switch(entita){
+						case "Pianta" :
+							{ query1 ="INSERT INTO Pianta(idCampione,nomeComune,nomeScientifico,specie,caratteristica,regione,area,ambiente,tipo)VALUES("+ dati[0] +")";
+							query2 = "INSERT INTO Specie(nome)VALUES("+datiPrimaMeta[3]+")";
+							break;
+						}
+						case "Raccoglitore":
+						{
+							query1 = "INSERT INTO Raccoglitore(CF,nome,cognome,istituto)VALUES("+dati[0]+")";
+							query2 = "INSERT INTO IstitutoDiRicerca(cod,via,numeroCivico,CAP,denominazione)VALUES("+ dati[1]+")";
+							break;
+						}
+						default :
+							{
+								query1 = "";
+								query2 = "";
+								break;
+							}
+						}
+			
+				//connessione al db
+				stmt = conn.createStatement();
+				stmt.execute(query1);
+				
+				//query relativa agli istituti di ricerca/specie associati agli elementi già inseriti nel database
+				stmt.execute(query2);
+
+				//stampa messaggio dopo l'aggiunta
+				textAreaRisultati.append("Record inserito correttamente");
+				textAreaRisultati.append("\n");
+				textAreaRisultati.setVisible(true);
+				scrollPaneRisultati.setVisible(true);
+
+				}catch (IOException i) {
+					i.printStackTrace();
+					
+				} catch (SQLException e) {
+					
+				 textAreaRisultati.append("Errore nell'inserimento:\n");
+				 textAreaRisultati.append(e.getMessage());
+				 textAreaRisultati.append("\n");
+				 textAreaRisultati.setVisible(true);
+				 scrollPaneRisultati.setVisible(true);	
+			}			
+		}			
 }
