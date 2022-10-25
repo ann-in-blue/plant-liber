@@ -174,7 +174,7 @@ public class PlantsGUI {
 		textAreaRisultati.setEditable(false);
 
 		scrollPaneRisultati = new JScrollPane(textAreaRisultati);
-		scrollPaneRisultati.setBounds(500, 350, 400, 150);
+		scrollPaneRisultati.setBounds(550, 350, 400, 150);
 		frame.getContentPane().add(scrollPaneRisultati);
 		scrollPaneRisultati.setVisible(false);
 
@@ -303,7 +303,7 @@ public class PlantsGUI {
 		
 		//bottone per la ricerca delle piante per area
 		JButton btnPiantePerArea = new JButton("Piante per Area");
-		btnPiantePerArea.setBounds(60, 350, 150, 30);
+		btnPiantePerArea.setBounds(60, 350, 150, 35);
 		frame.getContentPane().add(btnPiantePerArea);
 		
 		btnPiantePerArea.addActionListener(new ActionListener() {
@@ -336,7 +336,43 @@ public class PlantsGUI {
 				}
 			});
 				
+		//bottone per gli ambienti con più piante officinali
+		JButton btnHabitatOfficinali = new JButton("Habitat con più Piante Officinali");
+		btnHabitatOfficinali.setBounds(230, 350, 275, 35);
+		frame.getContentPane().add(btnHabitatOfficinali);
+		
+		btnHabitatOfficinali.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				
+				String query = "select nome, count(*) from piante_per_habitat "
+								+ "where idCampione IN (Select idCampione "
+												+ "from PiantaOfficinale) "
+								+ "group by nome "
+								+ "order by count(*) DESC "
+								+ "limit 5";
+		
+				try {
+					
+					stmt = conn.createStatement();
+					rs = stmt.executeQuery(query);
+					
+					while(rs.next()) {
+						
+						String nome = rs.getString("nome");
+						int count = rs.getInt("count(*)");
+					   
+						textAreaRisultati.append(nome +":   "+ count);
+						textAreaRisultati.append("\n");
+						textAreaRisultati.setVisible(true);
+						scrollPaneRisultati.setVisible(true);
+						
+						}
+				}catch (SQLException e1) {
+					e1.printStackTrace();
+			
+					}
+				}
+			});	
 				
 	}
 	

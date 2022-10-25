@@ -139,7 +139,7 @@ public class DBPL
 					(int)(Math.random()*20)+"','ordine_"+(int)(Math.random()*10)+"','famiglia_"+(int)(Math.random()*25)+"','genere_"+(int)(Math.random()*17)+"')";
 			
 			case Habitat -> res = "INSERT INTO Habitat(tipoH,fasciaClimatica,latitudine,altitudine,topologia, nome) VALUES("+i+",'clima_"+(int)(Math.random()*17)+"','lat_"
-					+ (int)(Math.random()*999999)+"',"+(int)(Math.random()*5000)+",'topol_"+(int)(Math.random()*25)+"','habitat_"+(int)(Math.random()*70)+"')";
+					+ (int)(Math.random()*999999)+"',"+(int)(Math.random()*5000)+",'topol_"+(int)(Math.random()*25)+"','habitat_"+i+"')";
 			
 			case Area -> res = "INSERT INTO Area(nome,regione,clima) VALUES('area_"+ i +"','reg_"+ (int)(Math.random()*130)+ "',"+(int)(Math.random()*70)+")";
 			
