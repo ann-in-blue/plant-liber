@@ -47,7 +47,7 @@ import java.awt.event.ActionEvent;
 
 public class PlantsGUI {
 
-	private JFrame frame;
+	public JFrame frame;
 	private JTextField fieldNomeComune;
 	private JTextField fieldSpecie;
 	private JTextField fieldNomeScientifico;
@@ -57,31 +57,21 @@ public class PlantsGUI {
 	private JScrollPane scrollPaneRisultati;
 	private JFileChooser fileChooser;
 	
-	private JLabel labelBottoni;
+//	private JLabel labelBottoni;
 	
-	//bottoni query
+	//BOTTONI PER LE QUERY
+	private JButton ricercaSemplice;
+	private JButton ricercaAvanzata;
 	private JButton btnPiantePerArea;
+	private JButton btnHabitatOfficinali;
+	private JButton btnCollezioneENumeroPiante;
+	private JButton btnMediaPiantePerArea;
 	
 	static Connection conn = null;
 	Statement stmt;
 	PreparedStatement pst;
 	ResultSet rs;
 			
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PlantsGUI window = new PlantsGUI();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -90,6 +80,7 @@ public class PlantsGUI {
 		
 		initialize();
 		Connect();
+		
 	}
 		
 	public void Connect()
@@ -109,45 +100,53 @@ public class PlantsGUI {
 	 */
 	private void initialize() {
 				
+		/**
+		 * Inizializzazione del frame principale
+		 */
 		frame = new JFrame();
 		frame.getContentPane().setFont(new Font("Dialog", Font.PLAIN, 23));
 		frame.setBounds(100, 100, 988, 591);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		//aggiunta il menu al frame
 		frame.setJMenuBar(creaBarraMenu());
 
 		
-		//TITOLI
+		//TITOLO DELL'APPLICAZIONE
 		JLabel labelPlantliber = new JLabel("PlantLiber");
 		labelPlantliber.setFont(new Font("Dialog", Font.BOLD, 23));
-		labelPlantliber.setBounds(379, 23, 172, 39);
+		labelPlantliber.setBounds(430, 23, 172, 39);
 		frame.getContentPane().add(labelPlantliber);
 		
+		//TITOLO RICERCA SEMPLICE
 		JLabel labelRicercaSemplice = new JLabel("Ricerca Semplice:");
 		labelRicercaSemplice.setFont(new Font("Dialog", Font.BOLD, 17));
 		labelRicercaSemplice.setBounds(12, 94, 194, 28);
 		frame.getContentPane().add(labelRicercaSemplice);
 		
+		//Field per Inserimento nome comune
 		JLabel labelNomeComune = new JLabel("Nome comune:");
 		labelNomeComune.setBounds(60, 134, 111, 28);
 		frame.getContentPane().add(labelNomeComune);
 		
-		//inserimento specie
+		//Field per Inserimento specie
 		JLabel labelSpecie = new JLabel("Specie:");
 		labelSpecie.setBounds(60, 170, 111, 28);
 		frame.getContentPane().add(labelSpecie);
 		
+		//Titolo Ricerca Avanzata
 		JLabel labelRicercaAvanzata = new JLabel("Ricerca Avanzata:");
 		labelRicercaAvanzata.setFont(new Font("Dialog", Font.BOLD, 17));
 		labelRicercaAvanzata.setBounds(12, 220, 177, 20);
 		frame.getContentPane().add(labelRicercaAvanzata);
 		
+		//Titolo Nome Scientifico
 		JLabel labelNomeScientifico = new JLabel("Caratteri iniziali del nome:");
 		labelNomeScientifico.setBounds(43, 240, 129, 23);
 		frame.getContentPane().add(labelNomeScientifico);
 		
-		//campi input
+		//CAMPI IN INPUT
 		fieldNomeComune = new JTextField();
 		fieldNomeComune.setBounds(189, 139, 114, 23);
 		frame.getContentPane().add(fieldNomeComune);
@@ -163,7 +162,7 @@ public class PlantsGUI {
 		frame.getContentPane().add(fieldNomeScientifico);
 		fieldNomeScientifico.setColumns(10);
 		
-		//tabella per vedere i risultati della ricerca
+		//Tabella per vedere i risultati della ricerca
 		tablePanelRisultati = new TablePanel();
 		tablePanelRisultati.setBounds(500, 100, 400, 200);
 		frame.getContentPane().add(tablePanelRisultati);
@@ -178,8 +177,12 @@ public class PlantsGUI {
 		frame.getContentPane().add(scrollPaneRisultati);
 		scrollPaneRisultati.setVisible(false);
 
+		/**
+		 * BOTTONE PER LA RICERCA SEMPLICE:
+		 * E' collegato ad un Action Listener che, una volta cliccato il bottone, permette di eseguire la query specifica.
+		 */
+		ricercaSemplice = new JButton("cerca");
 		
-		JButton ricercaSemplice = new JButton("cerca");
 		ricercaSemplice.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -240,8 +243,12 @@ public class PlantsGUI {
 		frame.getContentPane().add(ricercaSemplice);
 		
 		
-		//RICERCA AVANZATA
-		JButton ricercaAvanzata = new JButton("cerca");
+		/**
+		 * BOTTONE PER LA RICERCA AVANZATA:
+		 * E' collegato ad un Action Listener che, una volta cliccato il bottone, permette di eseguire la query specifica.
+		 */
+		ricercaAvanzata = new JButton("cerca");
+		
 		ricercaAvanzata.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -271,7 +278,9 @@ public class PlantsGUI {
 					    String clima = rs.getString("fasciaClimatica");
 					    
 					    listaPiante.add(new Pianta(nomeScientifico, nomeSpecie, famiglia, regno, divisione, clima));
+					    
 					    System.out.println(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
+					   
 					    textAreaRisultati.append(nomeScientifico +" "+ nomeSpecie + " "+ famiglia +" "+regno+" "+ divisione +" "+ clima);
 						textAreaRisultati.append("\n");
 						textAreaRisultati.setVisible(true);
@@ -295,15 +304,17 @@ public class PlantsGUI {
 		ricercaAvanzata.setBounds(306, 240, 84, 20);
 		frame.getContentPane().add(ricercaAvanzata);
 		
-		//label sezione dei bottoni
+		//Label sezione dei bottoni per le altre query dell'applicazione
 		JLabel labelBottoni = new JLabel("Ricerche frequenti");
 		labelBottoni.setFont(new Font("Dialog", Font.BOLD, 17));
 		labelBottoni.setBounds(100, 300, 200, 28);
 		frame.getContentPane().add(labelBottoni);
 		
-		//bottone per la ricerca delle piante per area
-		JButton btnPiantePerArea = new JButton("Piante per Area");
-		btnPiantePerArea.setBounds(60, 350, 150, 35);
+		/**
+		 * Bottone per la ricerca delle piante per area
+		 */
+		btnPiantePerArea = new JButton("Piante per Area");
+		btnPiantePerArea.setBounds(70, 350, 150, 35);
 		frame.getContentPane().add(btnPiantePerArea);
 		
 		btnPiantePerArea.addActionListener(new ActionListener() {
@@ -336,9 +347,11 @@ public class PlantsGUI {
 				}
 			});
 				
-		//bottone per gli ambienti con più piante officinali
-		JButton btnHabitatOfficinali = new JButton("Habitat con più Piante Officinali");
-		btnHabitatOfficinali.setBounds(230, 350, 275, 35);
+		/**
+		 * Bottone per gli ambienti con più piante officinali
+		 */
+		btnHabitatOfficinali = new JButton("Habitat con più Piante Officinali");
+		btnHabitatOfficinali.setBounds(240, 350, 275, 35);
 		frame.getContentPane().add(btnHabitatOfficinali);
 		
 		btnHabitatOfficinali.addActionListener(new ActionListener() {
@@ -374,147 +387,231 @@ public class PlantsGUI {
 				}
 			});	
 				
-	}
 	
-	//CREA BARRA PER IL MENU
+	/**
+	 * Bottone per avere le collezioni e i numeri di piante presenti in esse
+	 */
+	btnCollezioneENumeroPiante = new JButton("Collezioni e numero di piante");
+	btnCollezioneENumeroPiante.setBounds(70, 400, 250, 35);
+	frame.getContentPane().add(btnCollezioneENumeroPiante);
 	
-		private JMenuBar creaBarraMenu()
-		{
-			JMenuBar barraMenu = new JMenuBar();
-			JMenu menuFile = new JMenu("File");
+	btnCollezioneENumeroPiante.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
 			
-			//items dentro la sezione 'file'
-			JMenuItem menuFileAggiungiPianta = new JMenuItem("Aggiungi una pianta");
-			JMenuItem menuFileAggiungiRaccoglitore = new JMenuItem("Aggiungi un raccoglitore");
-			JMenuItem menuFileEliminaPianta = new JMenuItem("Elimina una pianta");
-			
-			//file chooser per caricare i dati da un file
-			fileChooser = new JFileChooser();
-			
-			//aggiunta item al menu file
-			menuFile.add(menuFileAggiungiPianta);
-			menuFile.add(menuFileAggiungiRaccoglitore);
-			menuFile.addSeparator();
-			menuFile.add(menuFileEliminaPianta);
-
-			//OPZIONE AGGIUNGI PIANTA
-			menuFileAggiungiPianta.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if(fileChooser.showOpenDialog(menuFileAggiungiPianta) == JFileChooser.APPROVE_OPTION){
-						caricaDaFile(fileChooser.getSelectedFile(), "Pianta");
-						}
-					}
-				});
-			
-			//OPZIONE AGGIUNGI RACCOGLITORE
-			menuFileAggiungiRaccoglitore.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if(fileChooser.showOpenDialog(menuFileAggiungiRaccoglitore) == JFileChooser.APPROVE_OPTION){
-						caricaDaFile(fileChooser.getSelectedFile(), "Raccoglitore");
-						}
-					}
-				});
-			
-			//OPZIONE ELIMINA PIANTA
-			menuFileEliminaPianta.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					//finestra per l inserimento dell'id della pianta in input
-					String input = JOptionPane.showInputDialog(frame,  "Inserisci l'id del campione da eliminare...", "Inserimento id", JOptionPane.QUESTION_MESSAGE);
-					int id = Integer.parseInt(input);
-										
-					String query = "DELETE FROM Pianta WHERE idCampione = "+ id;
-					System.out.println(query);
-					
-					//connessione al db
-					try {
-						stmt = conn.createStatement();					
-						stmt.execute(query);
-						//stampa messaggio dopo l'eliminazione
-						textAreaRisultati.append("Record eliminato");
-						textAreaRisultati.append("\n");
-						textAreaRisultati.setVisible(true);
-						scrollPaneRisultati.setVisible(true);
-						
-
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-						}
-					}
-				});
-			
-			barraMenu.add(menuFile);
-			return barraMenu;
-			} //creaBarraMenu
-
-		/**
-		 * Metodo per caricare dei dati da un file e inserirli nel database
-		 * @param file
-		 * @param entita -> indica in quale tabella inserire i dati
-		 */
-		public void caricaDaFile(File file, String entita)
-		{
+			String query = "SELECT nomeCollezione, sum(count) FROM PlantLiber.collezione_per_area_e_numero\n"
+					+ "group by nomeCollezione\n"
+					+ "order by nomeCollezione";
+	
 			try {
 				
-				Path filePath = Path.of(file.getAbsolutePath());	//recupera il Path del file
-				String content = Files.readString(filePath);		//lettura stringa completa da file (stringa divisa in due da un trattino
-				String query1, query2; //query per gli inserimenti
-				
-				//divisione della stringa a metà: prima metà in cui sono presenti i dati delle entità principali (pianta e raccoglitore) e seconda metà per i dati delle entita secondarie (istituto di ricerca e specie)
-				String[] dati = content.split("-");
-				
-				//dati prima metà: pianta/raccoglitore -> datiPrimaMeta[3] contiene il nome della specie
-				String[] datiPrimaMeta = dati[0].split(",");
-				
-				System.out.println(dati[0]);
-				System.out.println("\n");
-				System.out.println(datiPrimaMeta[3]);
-				
-				switch(entita){
-						case "Pianta" :
-							{ query1 ="INSERT INTO Pianta(idCampione,nomeComune,nomeScientifico,specie,caratteristica,regione,area,ambiente,tipo)VALUES("+ dati[0] +")";
-							query2 = "INSERT INTO Specie(nome)VALUES("+datiPrimaMeta[3]+")";
-							break;
-						}
-						case "Raccoglitore":
-						{
-							query1 = "INSERT INTO Raccoglitore(CF,nome,cognome,istituto)VALUES("+dati[0]+")";
-							query2 = "INSERT INTO IstitutoDiRicerca(cod,via,numeroCivico,CAP,denominazione)VALUES("+ dati[1]+")";
-							break;
-						}
-						default :
-							{
-								query1 = "";
-								query2 = "";
-								break;
-							}
-						}
-			
-				//connessione al db
 				stmt = conn.createStatement();
-				stmt.execute(query1);
+				rs = stmt.executeQuery(query);
 				
-				//query relativa agli istituti di ricerca/specie associati agli elementi già inseriti nel database
-				stmt.execute(query2);
-
-				//stampa messaggio dopo l'aggiunta
-				textAreaRisultati.append("Record inserito correttamente");
-				textAreaRisultati.append("\n");
-				textAreaRisultati.setVisible(true);
-				scrollPaneRisultati.setVisible(true);
-
-				}catch (IOException i) {
-					i.printStackTrace();
+				while(rs.next()) {
 					
-				} catch (SQLException e) {
+					String nome = rs.getString("nomeCollezione");
+					int count = rs.getInt("sum(count)");
+				   
+					textAreaRisultati.append(nome +":   "+ count);
+					textAreaRisultati.append("\n");
+					textAreaRisultati.setVisible(true);
+					scrollPaneRisultati.setVisible(true);
 					
-				 textAreaRisultati.append("Errore nell'inserimento:\n");
-				 textAreaRisultati.append(e.getMessage());
-				 textAreaRisultati.append("\n");
-				 textAreaRisultati.setVisible(true);
-				 scrollPaneRisultati.setVisible(true);	
+					}
+			}catch (SQLException e1) {
+				e1.printStackTrace();
+		
+				}
+			}
+		});
+	
+	
+	/**
+	 * Bottone che restituisce la media delle piante presenti nelle varie collezioni divise per area.
+	 */
+	btnMediaPiantePerArea = new JButton("Media piante per area");
+	btnMediaPiantePerArea.setBounds(340, 400, 200, 35);
+	frame.getContentPane().add(btnMediaPiantePerArea);
+	
+	btnMediaPiantePerArea.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			
+			String query = "SELECT luogoRaccolta, avg(count) as media\n"
+					+ "FROM PlantLiber.collezione_per_area_e_numero\n"
+					+ "group by luogoRaccolta\n"
+					+ "order by media;";
+			
+			try {
+				
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(query);
+				
+				while(rs.next()) {
+					
+					String luogo = rs.getString("luogoRaccolta");
+					int media = rs.getInt("media");
+				   
+					textAreaRisultati.append(luogo +":   "+ media);
+					textAreaRisultati.append("\n");
+					textAreaRisultati.setVisible(true);
+					scrollPaneRisultati.setVisible(true);
+					
+					}
+			}catch (SQLException e1) {
+				e1.printStackTrace();
+		
+				}
+			}
+		});
+	}
+			
+	
+	/**
+	 * METODO CHE CREA LA BARRA PER IL MENU.
+	 * @return
+	 */
+	
+	private JMenuBar creaBarraMenu()
+	{
+		JMenuBar barraMenu = new JMenuBar();
+		JMenu menuFile = new JMenu("File");
+		
+		//items dentro la sezione 'file'
+		JMenuItem menuFileAggiungiPianta = new JMenuItem("Aggiungi una pianta");
+		JMenuItem menuFileAggiungiRaccoglitore = new JMenuItem("Aggiungi un raccoglitore");
+		JMenuItem menuFileEliminaPianta = new JMenuItem("Elimina una pianta");
+		
+		//file chooser per caricare i dati da un file
+		fileChooser = new JFileChooser();
+		
+		//aggiunta item al menu file
+		menuFile.add(menuFileAggiungiPianta);
+		menuFile.add(menuFileAggiungiRaccoglitore);
+		menuFile.addSeparator();
+		menuFile.add(menuFileEliminaPianta);
+
+		//OPZIONE AGGIUNGI PIANTA
+		menuFileAggiungiPianta.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(fileChooser.showOpenDialog(menuFileAggiungiPianta) == JFileChooser.APPROVE_OPTION){
+					caricaDaFile(fileChooser.getSelectedFile(), "Pianta");
+					}
+				}
+			});
+		
+		//OPZIONE AGGIUNGI RACCOGLITORE
+		menuFileAggiungiRaccoglitore.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(fileChooser.showOpenDialog(menuFileAggiungiRaccoglitore) == JFileChooser.APPROVE_OPTION){
+					caricaDaFile(fileChooser.getSelectedFile(), "Raccoglitore");
+					}
+				}
+			});
+		
+		//OPZIONE ELIMINA PIANTA
+		menuFileEliminaPianta.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//finestra per l inserimento dell'id della pianta in input
+				String input = JOptionPane.showInputDialog(frame,  "Inserisci l'id del campione da eliminare...", "Inserimento id", JOptionPane.QUESTION_MESSAGE);
+				int id = Integer.parseInt(input);
+									
+				String query = "DELETE FROM Pianta WHERE idCampione = "+ id;
+				System.out.println(query);
+				
+				//connessione al db
+				try {
+					stmt = conn.createStatement();					
+					stmt.execute(query);
+					//stampa messaggio dopo l'eliminazione
+					textAreaRisultati.append("Record eliminato");
+					textAreaRisultati.append("\n");
+					textAreaRisultati.setVisible(true);
+					scrollPaneRisultati.setVisible(true);
+					
+
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					}
+				}
+			});
+		
+		barraMenu.add(menuFile);
+		return barraMenu;
+		} //creaBarraMenu
+
+	/**
+	 * Metodo per caricare dei dati da un file e inserirli nel database
+	 * @param file
+	 * @param entita -> indica in quale tabella inserire i dati
+	 */
+	public void caricaDaFile(File file, String entita)
+	{
+		try {
+			
+			Path filePath = Path.of(file.getAbsolutePath());	//recupera il Path del file
+			String content = Files.readString(filePath);		//lettura stringa completa da file (stringa divisa in due da un trattino
+			String query1, query2; //query per gli inserimenti
+			
+			//divisione della stringa a metà: prima metà in cui sono presenti i dati delle entità principali (pianta e raccoglitore) e seconda metà per i dati delle entita secondarie (istituto di ricerca e specie)
+			String[] dati = content.split("-");
+			
+			//dati prima metà: pianta/raccoglitore -> datiPrimaMeta[3] contiene il nome della specie
+			String[] datiPrimaMeta = dati[0].split(",");
+			
+			System.out.println(dati[0]);
+			System.out.println("\n");
+			System.out.println(datiPrimaMeta[3]);
+			
+			switch(entita){
+					case "Pianta" :
+						{ 
+						query1 ="INSERT INTO Pianta(idCampione,nomeComune,nomeScientifico,specie,caratteristica,regione,area,ambiente,tipo)VALUES("+ dati[0] +")";
+						query2 = "INSERT INTO Specie(nome)VALUES("+datiPrimaMeta[3]+")";
+						break;
+					}
+					case "Raccoglitore":
+					{
+						query1 = "INSERT INTO Raccoglitore(CF,nome,cognome,istituto)VALUES("+dati[0]+")";
+//							query2 = "INSERT INTO IstitutoDiRicerca(cod,via,numeroCivico,CAP,denominazione)VALUES("+ dati[1]+")";
+						query2="";
+						
+						break;
+					}
+					default :
+						{
+							query1 = "";
+							query2 = "";
+							break;
+						}
+					}
+		
+			//connessione al db
+			stmt = conn.createStatement();
+			stmt.execute(query1);
+			
+			//query relativa agli istituti di ricerca/specie associati agli elementi già inseriti nel database
+			if(entita.equals("Pianta"))
+					stmt.execute(query2);
+
+			//stampa messaggio dopo l'aggiunta
+			textAreaRisultati.append("Record inserito correttamente");
+			textAreaRisultati.append("\n");
+			textAreaRisultati.setVisible(true);
+			scrollPaneRisultati.setVisible(true);
+
+			}catch (IOException i) {
+				i.printStackTrace();
+				
+			} catch (SQLException e) {
+				
+			 textAreaRisultati.append("Errore nell'inserimento:\n");
+			 textAreaRisultati.append(e.getMessage());
+			 textAreaRisultati.append("\n");
+			 textAreaRisultati.setVisible(true);
+			 scrollPaneRisultati.setVisible(true);	
 			}			
 		}			
 }

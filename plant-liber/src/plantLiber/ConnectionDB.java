@@ -4,14 +4,21 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Classe che si occupa di inizializzare per la prima volta il database. 
+ * In questo caso vengono utilizzati valori generici.
+ * @author a-00
+ *
+ */
 public class ConnectionDB 
 {
-	
+	/**
+	 * Classe che contiene i vari metodi e le query per inserire i dati nelle varie tabelle del database.
+	 */
+	DBPL pl = new DBPL();
 
-	public static void main(String[] args)
-	{
-		DBPL pl = new DBPL();
-	
+	public void inizializzaDB()
+	{	
 		
 		try {
 			String DB_NAME = "PlantLiber";
@@ -21,11 +28,11 @@ public class ConnectionDB
 						
 													
 			//FIORE 150 ok
-			//DBPL.generaTuplaGenerica(1, 150, Tabella.Fiore);
+			DBPL.generaTuplaGenerica(1, 150, Tabella.Fiore);
 			//PROP 100 ok
-			//DBPL.generaTuplaGenerica(1, 100, Tabella.ProprietàOfficinali);
+			DBPL.generaTuplaGenerica(1, 100, Tabella.ProprietàOfficinali);
 			//HABITAT 70 ok
-			DBPL.generaTuplaGenerica(1, 70, Tabella.Habitat);
+//			DBPL.generaTuplaGenerica(1, 70, Tabella.Habitat);
 			//AREA 400  ok
 			//DBPL.generaTuplaGenerica(1, 400, Tabella.Area);
 			//SPECIE 500 ok
