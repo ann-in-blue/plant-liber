@@ -73,7 +73,7 @@ public class DBPL
 		
 		
 				for (int i = inizio; i < fine; i++) {
-					res= "INSERT INTO PiantaOfficinale(idCampione,proprietàOfficinali) VALUES ("+ i  +",p_" + (int)(Math.random()*100)+")";
+					res= "INSERT INTO PiantaOfficinale(idCampione,proprietàOfficinali) VALUES ("+ i  +",p_" + (int)(Math.random()*700)+")";
 		
 					System.out.println(res);
 					popolaBDPL(res);
@@ -126,7 +126,7 @@ public class DBPL
 			case Angiosperme -> res = "INSERT INTO Angiosperme(idCampione,fiore)"
 					+ " VALUES ("+ i  +"," + (int)(Math.random()*150)+")";
 			case PiantaOfficinale -> res = "INSERT INTO PiantaOfficinale(idCampione,proprietàOfficinali) "
-					+ "VALUES ("+ i  +",'p_" + (int)(Math.random()*100)+"')";
+					+ "VALUES ("+ i  +",'p_" + (int)(Math.random()*700)+"')";
 	
 			case Specie -> res = "INSERT INTO Specie(nome) VALUES ('specie_"+i+"')";
 			
@@ -154,8 +154,8 @@ public class DBPL
 			case Collezione -> res = "INSERT INTO Collezione(idCollezione,nomeCollezione,dataRaccolta,luogoRaccolta,raccoglitore) VALUES("+i+""
 					+ ",'nomeColl_"+i+"',"+ "'1999/01/03'"+",'area_"+ (int)(Math.random()*400) +"','CF_"+(int)(Math.random()*900)+"')" ;
 			
-			case ProprietàOfficinali -> res = "INSERT INTO ProprietàOfficinali(tipoP,utilizzo,controindicazione,parteEdibile)"
-					+ " VALUES('tipo_"+i+"','ut_"+(int)(Math.random()*40)+"','c_"+(int)(Math.random()*4)+
+			case ProprietaOfficinali -> res = "INSERT INTO ProprietaOfficinali(tipoP,utilizzo,controindicazione,parteEdibile)"
+					+ " VALUES('p_"+i+"','ut_"+(int)(Math.random()*40)+"','c_"+(int)(Math.random()*4)+
 					"','parte_"+(int)(Math.random()*37)+"')";
 			
 			default -> res = "";

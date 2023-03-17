@@ -18,7 +18,7 @@ public enum Tabella {
 						"luogoRaccolta", "regioneR", "raccoglitore"),
 	Raccoglitore (4, "CF", "nome", "cognome", "istituto"),
 	IstitutoDiRicerca (5, "cod", "via", "numCivico", "CAP", "denominazione"),
-	ProprietàOfficinali (4, "tipoP", "utilizzo", "controindicazione", "parteEdibile"),
+	ProprietaOfficinali (4, "tipoP", "utilizzo", "controindicazione", "parteEdibile"),
 	ParteEdibile (1, "parte"),
 	Fiore(4, "idFiore", "struttura", "colore", "dimensione");
 	

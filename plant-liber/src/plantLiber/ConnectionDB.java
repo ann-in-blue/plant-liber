@@ -28,9 +28,9 @@ public class ConnectionDB
 						
 													
 			//FIORE 150 ok
-			DBPL.generaTuplaGenerica(1, 150, Tabella.Fiore);
+			//DBPL.generaTuplaGenerica(1, 150, Tabella.Fiore);
 			//PROP 100 ok
-			DBPL.generaTuplaGenerica(1, 100, Tabella.ProprietàOfficinali);
+			//DBPL.generaTuplaGenerica(1, 100, Tabella.ProprietàOfficinali);
 			//HABITAT 70 ok
 //			DBPL.generaTuplaGenerica(1, 70, Tabella.Habitat);
 			//AREA 400  ok
@@ -49,7 +49,7 @@ public class ConnectionDB
 			//CLASSIFIC 370 ok
 			//DBPL.generaTuplaGenerica(1, 370, Tabella.Classificazione);
 			//PROPRIETÀ OFFICIN 700 ok
-			//DBPL.generaTuplaGenerica(1, 700, Tabella.ProprietàOfficinali);
+//			DBPL.generaTuplaGenerica(1, 700, Tabella.ProprietaOfficinali);
 			 
 			//Parte Edibile 45 ok
 			//DBPL.generaTuplaGenerica(1, 45, Tabella.ParteEdibile);
@@ -64,7 +64,7 @@ public class ConnectionDB
 			//DBPL.generaTuplaGenerica(7447,9000, Tabella.Pianta);
 			//DBPL.generaPianteRandom(1000, 2000);
 			//pianta officin 2500
-			//DBPL.generaTuplaGenerica(51, 2500, Tabella.PiantaOfficinale);
+			DBPL.generaTuplaGenerica(51, 2500, Tabella.PiantaOfficinale);
 			pl.conn.close();
 		} catch (SQLException ex) {
 			
